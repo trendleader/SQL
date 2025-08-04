@@ -1,0 +1,24 @@
+WITH LatestFillDate AS (
+    SELECT 
+        P.member_Id,
+        --p.[claim_id],
+        MAX([fill_date]) as lastFillDate
+    FROM [dbo].[pharmacy_claims] p
+    GROUP BY p.member_Id
+),
+ClaimsData AS(
+SELECT [member_id],[first_name], [last_name],[AGE] FROM [dbo].[Claims_Data]
+)
+SELECT DISTINCT
+    c.member_Id,
+	d.[first_name],
+	d.[last_name],
+	D.AGE,
+    ld.lastFillDate
+FROM [dbo].[pharmacy_claims] c
+INNER JOIN ClaimsData d
+ON c.member_id=d.member_id
+INNER JOIN LatestFillDate ld 
+    ON c.member_Id = ld.member_Id 
+    --AND  = ld.lastFillDate
+	ORDER BY c.member_Id;
